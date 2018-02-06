@@ -48,6 +48,11 @@ Sessions are a way to provide a **state**, so when every request is made, there 
 * Configure passport
 
 ----------
-### Auth Code Along part 2
+### Auth Code Along part 3
 * Add Register routes
 * Add Register form
+
+----------
+### Auth Code Along part 4
+* Add Login routes
+* Add Login form
