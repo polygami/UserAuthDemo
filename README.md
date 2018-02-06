@@ -56,3 +56,8 @@ Sessions are a way to provide a **state**, so when every request is made, there 
 ### Auth Code Along part 4
 * Add Login routes
 * Add Login form
+
+----------
+### Auth Code Along part 5
+* Add Logout routes
+* Add isLoggedIn middleware
