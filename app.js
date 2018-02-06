@@ -1,3 +1,6 @@
+/////////////////////////////////////////////////
+//                    SETUP                    //
+/////////////////////////////////////////////////
 var	express					= require("express"),
 	mongoose				= require("mongoose"),
 	passport				= require("passport"),
@@ -6,11 +9,15 @@ var	express					= require("express"),
 	LocalStrategy			= require("passport-local"),
 	passportLocalMongoose	= require("passport-local-mongoose");
 
-
 mongoose.connect("mongodb://localhost/auth_demo");
-
 var app	= express();
+app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
+
+/////////////////////////////////////////////////
+//          PASSPORT & SESSION CONFIG          //
+/////////////////////////////////////////////////
+
 app.use(require("express-session")({
 	secret: "Now are the winters of our discontent.",
 	resave: false,
@@ -22,6 +29,10 @@ app.use(passport.session());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+/////////////////////////////////////////////////
+//                MAIN ROUTES                  //
+/////////////////////////////////////////////////
+
 // INDEX
 app.get("/", function(req, res) {
 	res.render("home");
@@ -30,6 +41,32 @@ app.get("/", function(req, res) {
 app.get("/secret", function(req, res) {
 	res.render("secret");
 });
+
+/////////////////////////////////////////////////
+//                AUTH ROUTES                  //
+/////////////////////////////////////////////////
+// Show sign up form
+app.get("/register", function (req, res) {
+	res.render("register");
+});
+// Handle user sign up
+app.post("/register", function (req, res) {
+	User.register(new User({username: req.body.username}), req.body.password, function(err, user){
+		if (err) {
+			console.log("There was an error");
+			console.log(err);
+			return res.render("register");
+		}
+		// passport allows us to swap strategies. In this case we are using local
+		passport.authenticate("local")(req, res, function(){
+			res.redirect("/secret");
+		});
+	});
+})
+
+/////////////////////////////////////////////////
+//                 SERVER SETUP                //
+/////////////////////////////////////////////////
 
 app.listen(process.env.PORT || 9302, process.env.IP, function () {
 	console.log("Server started on 9302");
